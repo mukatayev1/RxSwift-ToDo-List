@@ -31,8 +31,8 @@ class ToDoController: UIViewController {
         button.setImage(K.pencilImage, for: .normal)
         button.titleLabel?.textAlignment = .center
         button.backgroundColor = .white
-        
         button.layer.cornerRadius = 20
+        button.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
         return button
     }()
     
@@ -83,7 +83,9 @@ class ToDoController: UIViewController {
     //MARK: - Selectors
     
     @objc func addTapped() {
-        print("Tap")
+        let vc = UINavigationController(rootViewController: NewTaskController())
+        vc.modalPresentationStyle = .fullScreen
+        present(vc, animated: true, completion: nil)
     }
 }
 
@@ -95,11 +97,9 @@ extension ToDoController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: K.reuseIdentifier, for: indexPath)
         
+        let cell = tableView.dequeueReusableCell(withIdentifier: K.reuseIdentifier, for: indexPath)
         cell.textLabel?.text = characters[indexPath.row]
         return cell
     }
-    
-    
 }
