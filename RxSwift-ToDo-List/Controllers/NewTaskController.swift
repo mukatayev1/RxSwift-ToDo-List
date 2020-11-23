@@ -54,6 +54,17 @@ class NewTaskController: UIViewController, UINavigationControllerDelegate {
         return button
     }()
     
+    private let cancelButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Cancel", for: .normal)
+        button.titleLabel?.textAlignment = .center
+        button.backgroundColor = .white
+        button.setTitleColor(.black, for: .normal)
+        button.layer.cornerRadius = 20
+        button.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)
+        return button
+    }()
+    
     //MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -81,6 +92,7 @@ class NewTaskController: UIViewController, UINavigationControllerDelegate {
         subviewContainer()
         subviewTaskTextField()
         subviewSaveButton()
+        subviewCancelButton()
     }
     
     //MARK: - Subviews
@@ -106,6 +118,12 @@ class NewTaskController: UIViewController, UINavigationControllerDelegate {
         saveButton.setDimensions(height: 40, width: 60)
     }
     
+    func subviewCancelButton() {
+        view.addSubview(cancelButton)
+        cancelButton.anchor(top: container.bottomAnchor, left: view.leftAnchor, paddingTop: 10, paddingLeft: 30)
+        cancelButton.setDimensions(height: 40, width: 80)
+    }
+    
     //MARK: - Selectors
     
     @objc func saveTapped() {
@@ -114,6 +132,10 @@ class NewTaskController: UIViewController, UINavigationControllerDelegate {
         
         let task = Task(title: title, priority: priority)
         delegate?.sendTask(task: task)
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func cancelTapped() {
         self.dismiss(animated: true, completion: nil)
     }
     
