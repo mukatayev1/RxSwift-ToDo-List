@@ -16,16 +16,20 @@ class ToDoController: UIViewController, UINavigationControllerDelegate {
     let disposeBag = DisposeBag()
     
     private var tasks = BehaviorRelay<[Task]>(value: [])
+    var filteredTasks = [Task]()
     
     let items = ["All", "High", "Medium", "Low"]
+    
     lazy var segmentedControl: UISegmentedControl = {
         let sc = UISegmentedControl(items: items)
         sc.layer.cornerRadius = 1
+        sc.addTarget(self, action: #selector(segmentValueChanged), for: .valueChanged)
         return sc
     }()
     
     
     var characters = ["Link", "Zelda", "Ganondorf", "Midna"]
+    
     var tableView: UITableView = {
         let tv = UITableView(frame: .zero, style: .insetGrouped)
         tv.backgroundColor = .clear
@@ -68,22 +72,52 @@ class ToDoController: UIViewController, UINavigationControllerDelegate {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: K.reuseIdentifier)
     }
     
+    private func updateTableView() {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+    
     func subscribeTheTask(task: Task) {
         
         Observable<Task>.create { observer in
             observer.onNext(task)
             return Disposables.create()
-        }.subscribe(onNext: { task in
-            
+        }.subscribe(
+            onNext: { [unowned self] task in
+            //filtering priority in the todo list
+            let priority = Priority(rawValue: self.segmentedControl.selectedSegmentIndex - 1)
+            //adding tasks
             var tasksValues = self.tasks.value
             tasksValues.append(task)
+            
             self.tasks.accept(tasksValues)
+            self.filterTasks(by: priority)
         },
-                    onError: { print($0) },
-                    onCompleted: { print("Completed") },
-                    onDisposed: { print("Disposed") }).disposed(by: disposeBag)
+            onError: { print($0) },
+            onCompleted: { print("Completed") },
+            onDisposed: { print("Disposed") }).disposed(by: disposeBag)
     }
     
+    func filterTasks(by priority: Priority?) {
+        
+        if priority == nil {
+            self.filteredTasks = self.tasks.value
+            self.updateTableView()
+        } else {
+            
+            self.tasks.map { tasks in
+                return tasks.filter { $0.priority == priority!}
+                
+            }.subscribe(onNext: { [weak self]
+                tasks in
+                self?.filteredTasks = tasks
+                print(tasks)
+            }).disposed(by: disposeBag)
+            
+            self.updateTableView()
+        }
+    }
     //MARK: - Subviews
     
     func subviewSegmentedControl() {
@@ -110,19 +144,24 @@ class ToDoController: UIViewController, UINavigationControllerDelegate {
         present(vc, animated: true, completion: nil)
         vc.delegate = self
     }
+    
+    @objc func segmentValueChanged(sender: UISegmentedControl) {
+        let priority = Priority(rawValue: sender.selectedSegmentIndex - 1)
+        filterTasks(by: priority)
+    }
 }
 
 //MARK: - Extensions
 
 extension ToDoController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return characters.count
+        return self.filteredTasks.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: K.reuseIdentifier, for: indexPath)
-        cell.textLabel?.text = characters[indexPath.row]
+        cell.textLabel?.text = self.filteredTasks[indexPath.row].title
         return cell
     }
 }

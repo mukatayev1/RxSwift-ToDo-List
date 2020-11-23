@@ -48,6 +48,7 @@ class NewTaskController: UIViewController, UINavigationControllerDelegate {
         button.setTitle("Save", for: .normal)
         button.titleLabel?.textAlignment = .center
         button.backgroundColor = .white
+        button.setTitleColor(.black, for: .normal)
         button.layer.cornerRadius = 20
         button.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
         return button
