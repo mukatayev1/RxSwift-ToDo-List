@@ -15,6 +15,7 @@
 		2BEEA6A9256A703E004D861C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BEEA6A8256A703E004D861C /* Extensions.swift */; };
 		2BEEA6AC256A71EC004D861C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BEEA6AB256A71EC004D861C /* Constants.swift */; };
 		2BEEA6B4256A87DF004D861C /* NewTaskController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BEEA6B3256A87DF004D861C /* NewTaskController.swift */; };
+		2BEEA6CF256A9453004D861C /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BEEA6CE256A9453004D861C /* Task.swift */; };
 		2C8F5C6CC82B91A2804DBF18 /* Pods_RxSwift_ToDo_List.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06DA0C4BC39B3CDC8BDFA165 /* Pods_RxSwift_ToDo_List.framework */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +32,7 @@
 		2BEEA6A8256A703E004D861C /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		2BEEA6AB256A71EC004D861C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		2BEEA6B3256A87DF004D861C /* NewTaskController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskController.swift; sourceTree = "<group>"; };
+		2BEEA6CE256A9453004D861C /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		49B9929154AFAD38481469A7 /* Pods-RxSwift-ToDo-List.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxSwift-ToDo-List.debug.xcconfig"; path = "Target Support Files/Pods-RxSwift-ToDo-List/Pods-RxSwift-ToDo-List.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -78,15 +80,40 @@
 			children = (
 				2B70749D256A6C89008AB70A /* AppDelegate.swift */,
 				2B70749F256A6C89008AB70A /* SceneDelegate.swift */,
-				2B7074B8256A6D90008AB70A /* ToDoController.swift */,
-				2BEEA6B3256A87DF004D861C /* NewTaskController.swift */,
-				2BEEA6A8256A703E004D861C /* Extensions.swift */,
-				2BEEA6AB256A71EC004D861C /* Constants.swift */,
+				2BEEA6CC256A9431004D861C /* Models */,
+				2BEEA6CB256A9420004D861C /* Controllers */,
+				2BEEA6CD256A9439004D861C /* Utils */,
 				2B7074A6256A6C8B008AB70A /* Assets.xcassets */,
 				2B7074A8256A6C8B008AB70A /* LaunchScreen.storyboard */,
 				2B7074AB256A6C8B008AB70A /* Info.plist */,
 			);
 			path = "RxSwift-ToDo-List";
+			sourceTree = "<group>";
+		};
+		2BEEA6CB256A9420004D861C /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				2B7074B8256A6D90008AB70A /* ToDoController.swift */,
+				2BEEA6B3256A87DF004D861C /* NewTaskController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		2BEEA6CC256A9431004D861C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				2BEEA6CE256A9453004D861C /* Task.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		2BEEA6CD256A9439004D861C /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				2BEEA6AB256A71EC004D861C /* Constants.swift */,
+				2BEEA6A8256A703E004D861C /* Extensions.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		B780738DAC57422909D230B6 /* Frameworks */ = {
@@ -215,6 +242,7 @@
 				2B7074A0256A6C89008AB70A /* SceneDelegate.swift in Sources */,
 				2BEEA6B4256A87DF004D861C /* NewTaskController.swift in Sources */,
 				2B7074B9256A6D90008AB70A /* ToDoController.swift in Sources */,
+				2BEEA6CF256A9453004D861C /* Task.swift in Sources */,
 				2BEEA6A9256A703E004D861C /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

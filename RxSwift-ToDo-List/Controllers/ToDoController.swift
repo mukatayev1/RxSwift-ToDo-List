@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import RxSwift
 
 class ToDoController: UIViewController {
     
     //MARK: - Properties
+    
+    let disposeBag = DisposeBag()
     
     let items = ["All", "High", "Medium", "Low"]
     lazy var segmentedControl: UISegmentedControl = {
@@ -41,6 +44,12 @@ class ToDoController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+//        print("viewDidLoad is triggered")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+//        print("viewWillAppear is triggered")
     }
     
     //MARK: - Helpers

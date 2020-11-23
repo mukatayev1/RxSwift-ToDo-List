@@ -6,13 +6,26 @@
 //
 
 import UIKit
+import RxSwift
+
+protocol NewTaskControllerDelegate {
+    func didSaveTheTask(subject: Task)
+}
 
 class NewTaskController: UIViewController {
     
     //MARK: - Properties
     
+    var delegate: NewTaskControllerDelegate?
+    
+     private let taskSubject = PublishSubject<Task>()
+    
+    var taskSubjectObservable: Observable<Task> {
+        return taskSubject.asObservable()
+    }
+    
     let items = ["High", "Medium", "Low"]
-    lazy var segmentedControl: UISegmentedControl = {
+    lazy var prioritySegmentedControl: UISegmentedControl = {
         let sc = UISegmentedControl(items: items)
         sc.layer.cornerRadius = 10
         return sc
@@ -90,13 +103,13 @@ class NewTaskController: UIViewController {
     //MARK: - Subviews
     
     func subviewSegmentedControl() {
-        view.addSubview(segmentedControl)
-        segmentedControl.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 15, paddingLeft: 20, paddingRight: 20, height: 40)
+        view.addSubview(prioritySegmentedControl)
+        prioritySegmentedControl.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 15, paddingLeft: 20, paddingRight: 20, height: 40)
     }
     
     func subviewContainer() {
         view.addSubview(container)
-        container.anchor(top: segmentedControl.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 20, paddingLeft: 20, paddingRight: 20, height: 150)
+        container.anchor(top: prioritySegmentedControl.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 20, paddingLeft: 20, paddingRight: 20, height: 150)
     }
     
     func subviewTaskTextField() {
@@ -107,7 +120,13 @@ class NewTaskController: UIViewController {
     //MARK: - Selectors
     
     @objc func saveTapped() {
-        dismiss(animated: true, completion: nil)
+        guard let priority = Priority(rawValue: self.prioritySegmentedControl.selectedSegmentIndex),
+              let title = self.taskTextField.text else { return }
+        
+        let task = Task(title: title, priority: priority)
+        taskSubject.onNext(task)
+        delegate.
+        self.dismiss(animated: true, completion: nil)
     }
 
     @objc func closeTapped() {
