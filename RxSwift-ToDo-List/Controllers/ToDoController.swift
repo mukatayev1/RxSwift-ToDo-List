@@ -27,9 +27,6 @@ class ToDoController: UIViewController, UINavigationControllerDelegate {
         return sc
     }()
     
-    
-    var characters = ["Link", "Zelda", "Ganondorf", "Midna"]
-    
     var tableView: UITableView = {
         let tv = UITableView(frame: .zero, style: .insetGrouped)
         tv.backgroundColor = .clear
