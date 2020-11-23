@@ -11,7 +11,7 @@ A simple ToDo app using RxSwift Framework
 * [Setup](#setup)
 
 ## Description
-A simple and visually appealing To-Do List app created using RxSwift Framework and UIKit
+A To-Do List app created using RxSwift Framework and UIKit
 ### How it works:
 * Add new tasks by pressing button at the bottom right
 * Choose the priority of a task: High, Medium or Low
