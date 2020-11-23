@@ -7,17 +7,20 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
 
-class ToDoController: UIViewController {
+class ToDoController: UIViewController, UINavigationControllerDelegate {
     
     //MARK: - Properties
     
     let disposeBag = DisposeBag()
     
+    private var tasks = BehaviorRelay<[Task]>(value: [])
+    
     let items = ["All", "High", "Medium", "Low"]
     lazy var segmentedControl: UISegmentedControl = {
         let sc = UISegmentedControl(items: items)
-        sc.layer.cornerRadius = 10
+        sc.layer.cornerRadius = 1
         return sc
     }()
     
@@ -44,12 +47,6 @@ class ToDoController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-//        print("viewDidLoad is triggered")
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-//        print("viewWillAppear is triggered")
     }
     
     //MARK: - Helpers
@@ -69,6 +66,22 @@ class ToDoController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: K.reuseIdentifier)
+    }
+    
+    func subscribeTheTask(task: Task) {
+        
+        Observable<Task>.create { observer in
+            observer.onNext(task)
+            return Disposables.create()
+        }.subscribe(onNext: { task in
+            
+            var tasksValues = self.tasks.value
+            tasksValues.append(task)
+            self.tasks.accept(tasksValues)
+        },
+                    onError: { print($0) },
+                    onCompleted: { print("Completed") },
+                    onDisposed: { print("Disposed") }).disposed(by: disposeBag)
     }
     
     //MARK: - Subviews
@@ -92,9 +105,10 @@ class ToDoController: UIViewController {
     //MARK: - Selectors
     
     @objc func addTapped() {
-        let vc = UINavigationController(rootViewController: NewTaskController())
+        let vc = NewTaskController()
         vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true, completion: nil)
+        vc.delegate = self
     }
 }
 
@@ -111,4 +125,12 @@ extension ToDoController: UITableViewDelegate, UITableViewDataSource {
         cell.textLabel?.text = characters[indexPath.row]
         return cell
     }
+}
+
+extension ToDoController: NewTaskControllerDelegate {
+    func sendTask(task: Task) {
+        subscribeTheTask(task: task)
+    }
+    
+    
 }

@@ -8,21 +8,15 @@
 import UIKit
 import RxSwift
 
-protocol NewTaskControllerDelegate {
-    func didSaveTheTask(subject: Task)
+protocol NewTaskControllerDelegate: class {
+    func sendTask(task: Task)
 }
 
-class NewTaskController: UIViewController {
+class NewTaskController: UIViewController, UINavigationControllerDelegate {
     
     //MARK: - Properties
     
     var delegate: NewTaskControllerDelegate?
-    
-     private let taskSubject = PublishSubject<Task>()
-    
-    var taskSubjectObservable: Observable<Task> {
-        return taskSubject.asObservable()
-    }
     
     let items = ["High", "Medium", "Low"]
     lazy var prioritySegmentedControl: UISegmentedControl = {
@@ -32,7 +26,7 @@ class NewTaskController: UIViewController {
     }()
     
     let container: UIView = {
-       let c = UIView()
+        let c = UIView()
         c.backgroundColor = .white
         c.layer.cornerRadius = 20
         return c
@@ -49,8 +43,18 @@ class NewTaskController: UIViewController {
         return tv
     }()
     
+    private let saveButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Save", for: .normal)
+        button.titleLabel?.textAlignment = .center
+        button.backgroundColor = .white
+        button.layer.cornerRadius = 20
+        button.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
+        return button
+    }()
+    
     //MARK: - Lifecycle
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -65,7 +69,6 @@ class NewTaskController: UIViewController {
     
     func setupUI() {
         setupGradientLayer()
-        setupNewTaskNavigationBar(title: "New Task", prefersLargeTitles: false)
         hideKeyboardWhenTappedAround()
         
         //Buttons for navigation item
@@ -76,28 +79,7 @@ class NewTaskController: UIViewController {
         subviewSegmentedControl()
         subviewContainer()
         subviewTaskTextField()
-    }
-    
-    func setupNewTaskNavigationBar(title: String, prefersLargeTitles: Bool) {
-        let appearance = UINavigationBarAppearance()
-        let navBar = navigationController?.navigationBar
-        
-        appearance.configureWithOpaqueBackground()
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
-        appearance.backgroundColor = .black
-        
-        navBar?.standardAppearance = appearance
-        navBar?.compactAppearance = appearance
-        navBar?.scrollEdgeAppearance = appearance
-        
-        navBar?.prefersLargeTitles = prefersLargeTitles
-        navigationItem.title = title
-        navBar?.tintColor = .white
-        navBar?.isTranslucent = true
-        navigationItem.largeTitleDisplayMode = .automatic
-        navBar?.sizeToFit()
-        
-        navBar?.overrideUserInterfaceStyle = .dark
+        subviewSaveButton()
     }
     
     //MARK: - Subviews
@@ -117,6 +99,12 @@ class NewTaskController: UIViewController {
         taskTextField.anchor(top: container.topAnchor, left: container.leftAnchor, right: container.rightAnchor, paddingTop: 10, paddingLeft: 10, paddingRight: 10)
     }
     
+    func subviewSaveButton() {
+        view.addSubview(saveButton)
+        saveButton.anchor(top: container.bottomAnchor, right: view.rightAnchor, paddingTop: 10, paddingRight: 30)
+        saveButton.setDimensions(height: 40, width: 60)
+    }
+    
     //MARK: - Selectors
     
     @objc func saveTapped() {
@@ -124,11 +112,10 @@ class NewTaskController: UIViewController {
               let title = self.taskTextField.text else { return }
         
         let task = Task(title: title, priority: priority)
-        taskSubject.onNext(task)
-        delegate.
+        delegate?.sendTask(task: task)
         self.dismiss(animated: true, completion: nil)
     }
-
+    
     @objc func closeTapped() {
         dismiss(animated: true, completion: nil)
     }
